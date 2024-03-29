@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services/Processings/Roles/" />
     <Folder Include="Services\Processings\Authentications\" />
   </ItemGroup>
 

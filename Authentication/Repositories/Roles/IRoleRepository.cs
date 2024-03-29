@@ -7,5 +7,7 @@ namespace Authentication.Repositories.Roles
         ValueTask<Role> InsertRoleAsync(Role role);
         ValueTask<List<Role>> SelectAllRolesAsync();
         ValueTask<Role> SelectRoleByNameAsync(string roleName);
+        ValueTask<Role> SelectRoleByIdAsync(Guid roleId);
+        ValueTask<Role> DeleteRoleByIdAsync(Role role);
     }
 }

@@ -14,12 +14,6 @@ namespace Authentication.Services.Foundations.Users
         ValueTask<User> RemoveUserByIdAsync(Guid userId);
         ValueTask<bool> AssignUserRole(User user, string roleName);
         ValueTask<string> RetreiveUserRoleAsync(User user);
-        ValueTask<string> GetRoleOfUserAsync(string username);
-
-
-        ValueTask<AuthenticatedResponse> UserRegisterAsync(CreateUserDto createUserDto);
-        ValueTask<AuthenticatedResponse> UserLoginAsync(LoginRequestDto loginRequest);
-        ValueTask<List<User>> SelectAllUsersAsync();
-        
+        ValueTask<string> GetRoleOfUserAsync(string username);        
     }
 }
