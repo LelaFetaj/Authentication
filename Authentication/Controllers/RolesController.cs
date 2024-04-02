@@ -1,6 +1,7 @@
 ﻿using Authentication.Models.Entities.Authorizations;
 using Authentication.Models.Entities.Roles;
 using Authentication.Services.Foundations.Roles;
+using Authentication.Services.Processings.Roles;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,11 +11,11 @@ namespace Authentication.Controllers {
     [Route("api/[controller]")]
     public class RolesController : ControllerBase 
     {
-        private readonly IRoleService roleService;
+        private readonly IRoleProcessingService roleProcessingService;
 
-        public RolesController(IRoleService roleService) 
+        public RolesController(IRoleProcessingService roleProcessingService) 
         {
-            this.roleService = roleService;
+            this.roleProcessingService = roleProcessingService;
         }
 
         /// <summary>
@@ -26,6 +27,6 @@ namespace Authentication.Controllers {
         [ProducesResponseType(typeof(IReadOnlyList<Role>), (int)HttpStatusCode.OK)]
         [Authorization(AuthorizationType.All, "Admin")]
         public async ValueTask<ActionResult<IReadOnlyList<Role>>> GetAllRoles() =>
-            Ok(await this.roleService.SelectAllRolesAsync());
+            Ok(await this.roleProcessingService.RetrieveAllRolesAsync());
     }
 }

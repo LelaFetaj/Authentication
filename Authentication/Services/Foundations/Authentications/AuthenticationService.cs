@@ -3,7 +3,7 @@ using Authentication.Repositories.Authentications;
 
 namespace Authentication.Services.Foundations.Authentications
 {
-    public class AuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IAuthenticationRepository authenticationRepository;
 

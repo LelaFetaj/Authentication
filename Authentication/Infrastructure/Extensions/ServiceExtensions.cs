@@ -5,8 +5,13 @@ using Authentication.Models.Entities.Users;
 using Authentication.Repositories.Authentications;
 using Authentication.Repositories.Roles;
 using Authentication.Repositories.Users;
+using Authentication.Services.Foundations.Authentications;
 using Authentication.Services.Foundations.Roles;
 using Authentication.Services.Foundations.Users;
+using Authentication.Services.Orchestrations.Users;
+using Authentication.Services.Processings.Authentications;
+using Authentication.Services.Processings.Roles;
+using Authentication.Services.Processings.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -77,14 +82,14 @@ namespace Authentication.Infrastructure.Extensions
         public static void AddAuthenticationServices(this IServiceCollection services)
         {
             services.AddTransient<IUserService, UserService>();
-            //services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<IRoleService, RoleService>();
 
-            //services.AddTransient<IAuthenticationProcessingService, AuthenticationProcessingService>();
-            //services.AddTransient<IUserProcessingService, UserProcessingService>();
-            //services.AddTransient<IRoleProcessingService, RoleProcessingService>();
+            services.AddTransient<IAuthenticationProcessingService, AuthenticationProcessingService>();
+            services.AddTransient<IUserProcessingService, UserProcessingService>();
+            services.AddTransient<IRoleProcessingService, RoleProcessingService>();
 
-            //services.AddTransient<IUserOrchestrationService, UserOrchestrationService>();
+            services.AddTransient<IUserOrchestrationService, UserOrchestrationService>();
         }
 
         public static void AddSwagger(this IServiceCollection services)

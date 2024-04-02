@@ -16,10 +16,10 @@ namespace Authentication.Services.Processings.Roles
         {
             var role = await this.roleService.RetrieveRoleByRoleName(roleName);
 
-            if (role is not null)
-            {
-                throw ("A role with this name already exists! Please choose another name!");
-            }
+            //if (role is not null)
+            //{
+            //    throw "A role with this name already exists! Please choose another name!";
+            //}
 
             Role newRole = new() { Name = roleName };
 
@@ -32,7 +32,7 @@ namespace Authentication.Services.Processings.Roles
         public async ValueTask<Role> RetrieveRoleByNameAsync(string roleName) =>
             await this.roleService.RetrieveRoleByRoleName(roleName);
 
-        public async ValueTask<Role> RemoveRoleByIdAsync(Guid roleid) =>
+        public async ValueTask<Role> RemoveRoleByIdAsync(Guid roleId) =>
             await this.roleService.RemoveRoleById(roleId);
     }
 }
