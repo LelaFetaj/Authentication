@@ -64,5 +64,13 @@ namespace Authentication.Services.Foundations.Users {
 
             return userRole;
         }
+
+        public async ValueTask<bool> RemoveFromRoleAsync(User user, string roleName)
+        {
+            IdentityResult result =
+                await this.userRepository.RemoveFromRoleAsync(user, roleName);
+
+            return result.Succeeded;
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace Authentication.Services.Orchestrations.Users {
         ValueTask<AuthenticatedResponse> UserRegisterAsync(CreateUserDto registerRequest);
         ValueTask<List<User>> RetrieveAllUsersAsync();
         ValueTask<string> GetUserRole(string username);
+        ValueTask<User> ModifyUserRole(Guid userId, string roleName);
     }
 }

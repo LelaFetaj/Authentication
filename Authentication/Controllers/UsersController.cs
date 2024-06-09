@@ -55,5 +55,17 @@ namespace Authentication.Controllers {
         [Authorization(AuthorizationType.All, "Admin")]
         public async ValueTask<ActionResult<string>> GetRoleOfUser(string username) =>
             Ok(await this.userOrchestrationService.GetUserRole(username));
+
+
+        /// <summary>
+        /// Changes the role of the user
+        /// </summary>
+        /// <remarks>This method needs administrator privilege.</remarks>
+        [Route("change-role-of-user")]
+        [HttpPut]
+        [ProducesResponseType(typeof(IReadOnlyList<User>), (int)HttpStatusCode.OK)]
+        //[Authorization(AuthorizationType.All, "Admin")]
+        public async ValueTask<ActionResult<User>> ModifyUserRole(Guid userId, string role) =>
+            Ok(await this.userOrchestrationService.ModifyUserRole(userId, role));
     }
 }

@@ -78,5 +78,11 @@ namespace Authentication.Services.Processings.Users {
 
         public async ValueTask<User> RemoveUserByIdAsync(Guid userId) =>
             await this.userService.RemoveUserByIdAsync(userId);
+
+        public async ValueTask<bool> AssignUserRoleAsync(User user, string roleName) =>
+             await this.userService.AssignUserRole(user, roleName);
+
+        public async ValueTask<bool> RemoveFromRoleAsync (User user, string roleName) =>
+            await this.userService.RemoveFromRoleAsync(user, roleName);
     }
 }

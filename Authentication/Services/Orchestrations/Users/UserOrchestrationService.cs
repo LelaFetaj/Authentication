@@ -5,6 +5,7 @@ using Authentication.Models.Entities.Users;
 using Authentication.Services.Processings.Authentications;
 using Authentication.Services.Processings.Roles;
 using Authentication.Services.Processings.Users;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace Authentication.Services.Orchestrations.Users {
     public class UserOrchestrationService : IUserOrchestrationService
@@ -80,6 +81,47 @@ namespace Authentication.Services.Orchestrations.Users {
             var user = await this.userProcessingService.RetrieveUserByUsernameAsync(username);
 
             return await this.userProcessingService.RetrieveUserRoleAsync(user);
+        }
+
+        public async ValueTask<User> ModifyUserRole(Guid userId, string roleName)
+        {
+
+            var storageUser = 
+                await this.userProcessingService.RetrieveUserByIdAsync(userId);
+
+            if (storageUser == null) 
+            { 
+                throw new Exception("User not found.");
+            }
+
+            Role role =
+                await this.roleProcessingService.RetrieveRoleByNameAsync(roleName);
+
+            if (role == null) 
+            {
+                throw new Exception("Role not found.");
+            }
+
+            var currentUserRole = await this.userProcessingService.RetrieveUserRoleAsync(storageUser);
+
+            if (currentUserRole.Any()) 
+            {
+                var removeRolesResult = await this.userProcessingService.RemoveFromRoleAsync(storageUser, currentUserRole);
+
+                if (!removeRolesResult) 
+                {
+                    throw new Exception("Failed to remove user from current roles.");
+                }
+            }
+
+            var addRoleResult = await this.userProcessingService.AssignUserRoleAsync(storageUser, roleName);
+
+            if (!addRoleResult) 
+            {
+                throw new Exception("Failed to add user to the new role.");
+            }
+
+            return storageUser;
         }
     }
 }

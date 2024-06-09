@@ -11,5 +11,7 @@ namespace Authentication.Services.Processings.Users {
         ValueTask<string> RetrieveUserRoleAsync(User user);
         ValueTask<User> ModifyUserAsync(ModifyUserDto modifyUserDto);
         ValueTask<User> RemoveUserByIdAsync(Guid userId);
+        ValueTask<bool> AssignUserRoleAsync(User user, string roleName);
+        ValueTask<bool> RemoveFromRoleAsync(User user, string roleName);
     }
 }
