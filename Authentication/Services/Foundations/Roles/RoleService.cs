@@ -1,9 +1,9 @@
 ﻿using Authentication.Models.Entities.Roles;
 using Authentication.Repositories.Roles;
 
-namespace Authentication.Services.Foundations.Roles 
+namespace Authentication.Services.Foundations.Roles
 {
-    public class RoleService : IRoleService
+    sealed partial class RoleService : IRoleService
     {
         private readonly IRoleRepository roleRepository;
 
@@ -12,20 +12,41 @@ namespace Authentication.Services.Foundations.Roles
             this.roleRepository = roleRepository;
         }
 
-        public async ValueTask<Role> AddRoleAsync(Role role) => 
-            await this.roleRepository.InsertRoleAsync(role);
+        public ValueTask<Role> AddRoleAsync(Role role) =>
+            TryCatch(async () =>
+            {
+                ValidateRoleOnCreate(role);
 
-        public async ValueTask<List<Role>> RetrieveAllRolesAsync() =>
-            await this.roleRepository.SelectAllRolesAsync();
+                return await this.roleRepository.InsertRoleAsync(role);
+            });
 
-        public async ValueTask<Role> RetrieveRoleByRoleName(string roleName) =>
-            await this.roleRepository.SelectRoleByNameAsync(roleName);
+        public ValueTask<List<Role>> RetrieveAllRolesAsync() =>
+            TryCatch(async () => await this.roleRepository.SelectAllRolesAsync());
 
-        public async ValueTask<Role> RemoveRoleById(Guid roleId)
-        {
-            Role maybeRole = await this.roleRepository.SelectRoleByIdAsync(roleId);
+        public ValueTask<Role> RetrieveRoleByRoleName(string roleName) =>
+            TryCatch(async () =>
+            {
+                ValidateRoleName(roleName);
 
-            return await this.roleRepository.DeleteRoleByIdAsync(maybeRole);
-        }
+                return await this.roleRepository.SelectRoleByNameAsync(roleName);
+            });
+
+        //public ValueTask<Role> RetrieveRoleByIdAsync(Guid roleId) =>
+        //    TryCatch(async () =>
+        //    {
+        //        ValidateRoleId(roleId);
+
+        //        return await this.roleRepository.SelectRoleByIdAsync(roleId);
+        //    });
+
+        public ValueTask<Role> RemoveRoleByIdAsync(Guid roleId) =>
+            TryCatch(async () =>
+            {
+                ValidateRoleId(roleId);
+
+                Role role = await this.roleRepository.SelectRoleByIdAsync(roleId);
+
+                return await this.roleRepository.DeleteRoleByIdAsync(role);
+            });
     }
 }

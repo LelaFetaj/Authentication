@@ -1,76 +1,96 @@
 ﻿using Authentication.Models.Entities.Users;
-using Authentication.Repositories.Authentications;
-using Authentication.Repositories.Roles;
 using Authentication.Repositories.Users;
 using Microsoft.AspNetCore.Identity;
 
-namespace Authentication.Services.Foundations.Users {
-    public class UserService : IUserService
+namespace Authentication.Services.Foundations.Users
+{
+    sealed partial class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
-        private readonly IRoleRepository roleRepository;
-        private readonly IAuthenticationRepository authenticationRepository;
-        private readonly string privateKey;
 
         public UserService(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
         }
 
-        public async ValueTask<User> RegisterUserAsync(User user, string password) =>
-            await this.userRepository.InsertUserAsync(user, password);
+        public ValueTask<User> RegisterUserAsync(User user, string password) =>
+            TryCatch(async () =>
+            {
+                ValidateUserOnRegister(user, password);
 
-        public async ValueTask<List<User>> RetrieveAllUsersAsync() =>
-            await this.userRepository.SelectAllUsersAsync();
+                return await this.userRepository.InsertUserAsync(user, password);
+            });
 
-        public async ValueTask<User> RetrieveUserByIdAsync(Guid userId) =>
-            await this.userRepository.SelectUserByIdAsync(userId);
+        public ValueTask<List<User>> RetrieveAllUsersAsync() =>
+            TryCatch(this.userRepository.SelectAllUsersAsync);
 
-        public async ValueTask<User> RetrieveUserByUsernameAsync(string username) =>
-            await this.userRepository.SelectUserByUsernameAsync(username);
+        public ValueTask<User> RetrieveUserByIdAsync(Guid userId) =>
+            TryCatch(async () =>
+            {
+                ValidateUserId(userId);
+                User user = await this.userRepository.SelectUserByIdAsync(userId);
+                ValidateStorageUser(user, userId);
 
-        public async ValueTask<User> ModifyUserAsync(User user) =>
-            await this.userRepository.UpdateUserAsync(user);
+                return user;
+            });
 
-        public async ValueTask<User> RemoveUserByIdAsync(Guid userId) 
-        {
-            User maybeUser = await this.userRepository.SelectUserByIdAsync(userId);
+        public ValueTask<User> RetrieveUserByUsernameAsync(string username) =>
+            TryCatch(async () =>
+            {
+                ValidateUsername(username);
 
-            return await this.userRepository.DeleteUserAsync(maybeUser);
-        }
+                return await this.userRepository.SelectUserByUsernameAsync(username);
+            });
 
-        public async ValueTask<bool> AssignUserRole(User user, string roleName) 
-        { 
-            IdentityResult result =
-                await this.userRepository.AddToRoleAsync(user, roleName);
+        public ValueTask<User> ModifyUserAsync(User user) =>
+            TryCatch(async () =>
+            {
+                ValidateUserOnModify(user);
 
-            return result.Succeeded;
-        }
+                return await this.userRepository.UpdateUserAsync(user);
+            });
 
-        public async ValueTask<string> RetreiveUserRoleAsync(User user) 
-        { 
-            var roles = await this.userRepository.GetUserRoles(user);
+        public ValueTask<User> RemoveUserByIdAsync(Guid userId) =>
+            TryCatch(async () =>
+            {
+                ValidateUserId(userId);
+                User user = await this.userRepository.SelectUserByIdAsync(userId);
+                ValidateStorageUser(user, userId);
 
-            return roles.FirstOrDefault();
-        }
+                return user;
+            });
 
-        public async ValueTask<string> GetRoleOfUserAsync(string username) 
-        {
-            var user =
-                await this.userRepository.SelectUserByUsernameAsync(username);
+        public ValueTask<bool> AssignUserRole(User user, string roleName) =>
+            TryCatch(async () =>
+                {
+                ValidateUserIsNull(user);
+                ValidateRoleName(roleName);
 
-            IEnumerable<string> userRoles = await this.userRepository.GetUserRoles(user);
-            string userRole = userRoles.FirstOrDefault();
+                IdentityResult result =
+                    await this.userRepository.AddToRoleAsync(user, roleName);
 
-            return userRole;
-        }
+                return result.Succeeded;
+            });
 
-        public async ValueTask<bool> RemoveFromRoleAsync(User user, string roleName)
-        {
-            IdentityResult result =
+        public ValueTask<string> RetreiveUserRoleAsync(User user) =>
+            TryCatch(async () =>
+            {
+                ValidateUserIsNull(user);
+
+                var roles = await this.userRepository.GetUserRoles(user);
+
+                return roles.FirstOrDefault();
+            });
+
+        public ValueTask<bool> RemoveFromRoleAsync(User user, string roleName) =>
+            TryCatch(async () =>
+            {
+                ValidateRoleName(roleName);
+
+                IdentityResult result =
                 await this.userRepository.RemoveFromRoleAsync(user, roleName);
 
-            return result.Succeeded;
-        }
+                return result.Succeeded;
+            });
     }
 }

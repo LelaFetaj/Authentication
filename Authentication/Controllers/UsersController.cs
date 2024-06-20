@@ -64,7 +64,7 @@ namespace Authentication.Controllers {
         [Route("change-role-of-user")]
         [HttpPut]
         [ProducesResponseType(typeof(IReadOnlyList<User>), (int)HttpStatusCode.OK)]
-        //[Authorization(AuthorizationType.All, "Admin")]
+        [Authorization(AuthorizationType.All, "Admin")]
         public async ValueTask<ActionResult<User>> ModifyUserRole(Guid userId, string role) =>
             Ok(await this.userOrchestrationService.ModifyUserRole(userId, role));
     }

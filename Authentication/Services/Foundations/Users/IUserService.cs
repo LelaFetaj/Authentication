@@ -1,6 +1,4 @@
-﻿using Authentication.Models.DTOs.Authentications;
-using Authentication.Models.DTOs.Users;
-using Authentication.Models.Entities.Users;
+﻿using Authentication.Models.Entities.Users;
 
 namespace Authentication.Services.Foundations.Users
 {
@@ -14,7 +12,6 @@ namespace Authentication.Services.Foundations.Users
         ValueTask<User> RemoveUserByIdAsync(Guid userId);
         ValueTask<bool> AssignUserRole(User user, string roleName);
         ValueTask<string> RetreiveUserRoleAsync(User user);
-        ValueTask<string> GetRoleOfUserAsync(string username);
         ValueTask<bool> RemoveFromRoleAsync(User user, string roleName);
     }
 }

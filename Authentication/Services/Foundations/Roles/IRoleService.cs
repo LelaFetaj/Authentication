@@ -6,6 +6,6 @@ namespace Authentication.Services.Foundations.Roles {
         ValueTask<Role> AddRoleAsync(Role role);
         ValueTask<List<Role>> RetrieveAllRolesAsync();
         ValueTask<Role> RetrieveRoleByRoleName(string roleName);
-        ValueTask<Role> RemoveRoleById(Guid roleId);
+        ValueTask<Role> RemoveRoleByIdAsync(Guid roleId);
     }
 }

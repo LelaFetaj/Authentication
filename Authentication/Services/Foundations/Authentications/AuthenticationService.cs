@@ -3,7 +3,7 @@ using Authentication.Repositories.Authentications;
 
 namespace Authentication.Services.Foundations.Authentications
 {
-    public class AuthenticationService : IAuthenticationService
+    sealed partial class AuthenticationService : IAuthenticationService
     {
         private readonly IAuthenticationRepository authenticationRepository;
 
@@ -12,17 +12,20 @@ namespace Authentication.Services.Foundations.Authentications
             this.authenticationRepository = authenticationRepository;
         }
 
-        public async ValueTask<bool> IsPasswordCorrect(
+        public ValueTask<bool> IsPasswordCorrect(
             User user,
             string password,
-            bool lockoutOnFailure = false) 
+            bool lockoutOnFailure = false) =>
+            TryCatch(async () =>
             {
                 var result = await this.authenticationRepository.CheckPasswordSignInAsync(
                     user,
                     password,
                     lockoutOnFailure);
 
+                ThrowExceptionIfFailed(result);
+
                 return result.Succeeded;
-            }
+            });
     }
 }

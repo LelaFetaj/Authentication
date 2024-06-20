@@ -33,6 +33,6 @@ namespace Authentication.Services.Processings.Roles
             await this.roleService.RetrieveRoleByRoleName(roleName);
 
         public async ValueTask<Role> RemoveRoleByIdAsync(Guid roleId) =>
-            await this.roleService.RemoveRoleById(roleId);
+            await this.roleService.RemoveRoleByIdAsync(roleId);
     }
 }
